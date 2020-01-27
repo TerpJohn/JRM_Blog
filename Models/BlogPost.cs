@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace JRM_Blog.Models.BlogModels.cs
+namespace JRM_Blog.Models
 {
     public class BlogPost
     {

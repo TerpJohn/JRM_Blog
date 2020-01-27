@@ -1,4 +1,4 @@
-﻿@model IEnumerable<JRM_Blog.Models.BlogModels.cs.Comment>
+﻿@model IEnumerable<JRM_Blog.Models.Comment>
 
 @{
     ViewBag.Title = "Index";
@@ -12,10 +12,10 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Author.FirstName)
+            @Html.DisplayNameFor(model => model.Author.DisplayName)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.PostId)
+            @Html.DisplayNameFor(model => model.Post.Title)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Body)
@@ -32,32 +32,57 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Author.FirstName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PostId)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Body)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Created)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Updated)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.UpdateReason)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Author.DisplayName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Post.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Body)
+            </td>
+            <td>
+                @item.Created.ToString("MMM dd, yyyy HH:mm")
+            </td>
+            <td>
+                @if (item.Updated == null)
+                {
+                    <p>No updates.</p>
+                }
+                else
+                {
+                    @item.Updated.Value.ToString("MMM dd, yyyy HH:mm")
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UpdateReason)
+            </td>
+            <td>
+                @Html.ActionLink("Details", "Details", "Comments", new { id = item.Id }, new { @class = "btn btn-primary" })
+                @if (User.IsInRole("Admin") || User.IsInRole("Moderator"))
+                {
+                    @Html.ActionLink("Edit", "Edit", "Comments", new { id = item.Id }, new { @class = "btn btn-success btn-wide" })
+                    @Html.ActionLink("Delete", "Delete", "Comments", new { id = item.Id }, new { @class = "btn btn-danger" })
+                }
+
+            </td>
+        </tr>
+    }
 
 </table>
+<hr>
+<div>
+    @using (Html.BeginForm("Index", "BlogPosts", FormMethod.Get, htmlAttributes: new { @class = "form" }))
+    {
+        <div class="controls controls-row search-row" id="searchbox">
+            <input id="searchStr" name="searchStr" class="input-block-level" type="text" placeholder="Search" />
+            <button id="searchStr" name="searchStr" class="btn btn-success" type="submit">
+                <i class="icon-search">Start Search</i>
+            </button>
+        </div>
+    }
+</div>
+

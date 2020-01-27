@@ -46,6 +46,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Owin.Security.Providers.LinkedIn, Version=2.0.0.0, Culture=neutral, PublicKeyToken=1328b8c16b108c43, processorArchitecture=MSIL">
+      <HintPath>packages\Owin.Security.Providers.LinkedIn.2.26.0\lib\net45\Owin.Security.Providers.LinkedIn.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList.Mvc, Version=4.5.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -175,11 +184,13 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\ImageUploadValidator.cs" />
     <Compile Include="Helpers\StringUtilities.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\BlogModels.cs\BlogPost.cs" />
-    <Compile Include="Models\BlogModels.cs\Comment.cs" />
+    <Compile Include="Models\BlogPost.cs" />
+    <Compile Include="Models\Comment.cs" />
+    <Compile Include="Models\EMailModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -190,12 +201,14 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\PagedList.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="private.config" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -333,6 +346,50 @@
     <Content Include="Scripts\tinymce\themes\silver\theme.min.js" />
     <Content Include="Scripts\tinymce\tinymce.js" />
     <Content Include="Scripts\tinymce\tinymce.min.js" />
+    <Content Include="Templates\css\clean-blog.css" />
+    <Content Include="Templates\css\clean-blog.min.css" />
+    <Content Include="Templates\img\about-bg.jpg" />
+    <Content Include="Templates\img\contact-bg.jpg" />
+    <Content Include="Templates\img\home-bg.jpg" />
+    <Content Include="Templates\img\post-bg.jpg" />
+    <Content Include="Templates\img\post-sample-image.jpg" />
+    <Content Include="Templates\js\clean-blog.js" />
+    <Content Include="Templates\js\clean-blog.min.js" />
+    <Content Include="Templates\js\contact_me.js" />
+    <Content Include="Templates\js\jqBootstrapValidation.js" />
+    <Content Include="Templates\mail\contact_me.php" />
+    <Content Include="Templates\vendor\bootstrap\css\bootstrap-grid.css" />
+    <Content Include="Templates\vendor\bootstrap\css\bootstrap-grid.min.css" />
+    <Content Include="Templates\vendor\bootstrap\css\bootstrap-reboot.css" />
+    <Content Include="Templates\vendor\bootstrap\css\bootstrap-reboot.min.css" />
+    <Content Include="Templates\vendor\bootstrap\css\bootstrap.css" />
+    <Content Include="Templates\vendor\bootstrap\css\bootstrap.min.css" />
+    <Content Include="Templates\vendor\bootstrap\js\bootstrap.bundle.js" />
+    <Content Include="Templates\vendor\bootstrap\js\bootstrap.bundle.min.js" />
+    <Content Include="Templates\vendor\bootstrap\js\bootstrap.js" />
+    <Content Include="Templates\vendor\bootstrap\js\bootstrap.min.js" />
+    <Content Include="Templates\vendor\fontawesome-free\css\all.css" />
+    <Content Include="Templates\vendor\fontawesome-free\css\all.min.css" />
+    <Content Include="Templates\vendor\fontawesome-free\css\brands.css" />
+    <Content Include="Templates\vendor\fontawesome-free\css\brands.min.css" />
+    <Content Include="Templates\vendor\fontawesome-free\css\fontawesome.css" />
+    <Content Include="Templates\vendor\fontawesome-free\css\fontawesome.min.css" />
+    <Content Include="Templates\vendor\fontawesome-free\css\regular.css" />
+    <Content Include="Templates\vendor\fontawesome-free\css\regular.min.css" />
+    <Content Include="Templates\vendor\fontawesome-free\css\solid.css" />
+    <Content Include="Templates\vendor\fontawesome-free\css\solid.min.css" />
+    <Content Include="Templates\vendor\fontawesome-free\css\svg-with-js.css" />
+    <Content Include="Templates\vendor\fontawesome-free\css\svg-with-js.min.css" />
+    <Content Include="Templates\vendor\fontawesome-free\css\v4-shims.css" />
+    <Content Include="Templates\vendor\fontawesome-free\css\v4-shims.min.css" />
+    <Content Include="Templates\vendor\fontawesome-free\webfonts\fa-brands-400.svg" />
+    <Content Include="Templates\vendor\fontawesome-free\webfonts\fa-regular-400.svg" />
+    <Content Include="Templates\vendor\fontawesome-free\webfonts\fa-solid-900.svg" />
+    <Content Include="Templates\vendor\jquery\jquery.js" />
+    <Content Include="Templates\vendor\jquery\jquery.min.js" />
+    <Content Include="Templates\vendor\jquery\jquery.slim.js" />
+    <Content Include="Templates\vendor\jquery\jquery.slim.min.js" />
+    <Content Include="Views\BlogPosts\Index.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -351,7 +408,6 @@
     <Content Include="Views\Account\ConfirmEmail.cshtml" />
     <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
     <Content Include="Views\Account\ExternalLoginFailure.cshtml" />
-    <Content Include="Views\Account\ForgotPassword.cshtml" />
     <Content Include="Views\Account\ForgotPasswordConfirmation.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
@@ -371,18 +427,55 @@
     <Content Include="Views\BlogPosts\Delete.cshtml" />
     <Content Include="Views\BlogPosts\Details.cshtml" />
     <Content Include="Views\BlogPosts\Edit.cshtml" />
-    <Content Include="Views\BlogPosts\Index.cshtml" />
+    <Content Include="Scripts\tinymce\skins\ui\oxide\fonts\tinymce-mobile.woff" />
+    <Content Include="Scripts\tinymce\skins\ui\oxide-dark\fonts\tinymce-mobile.woff" />
+    <Content Include="Scripts\tinymce\langs\readme.md" />
+    <Content Include="Templates\scss\clean-blog.scss" />
+    <Content Include="Templates\scss\_bootstrap-overrides.scss" />
+    <Content Include="Templates\scss\_contact.scss" />
+    <Content Include="Templates\scss\_footer.scss" />
+    <Content Include="Templates\scss\_global.scss" />
+    <Content Include="Templates\scss\_masthead.scss" />
+    <Content Include="Templates\scss\_mixins.scss" />
+    <Content Include="Templates\scss\_navbar.scss" />
+    <Content Include="Templates\scss\_post.scss" />
+    <Content Include="Templates\scss\_variables.scss" />
+    <Content Include="Templates\vendor\bootstrap\css\bootstrap-grid.css.map" />
+    <Content Include="Templates\vendor\bootstrap\css\bootstrap-grid.min.css.map" />
+    <Content Include="Templates\vendor\bootstrap\css\bootstrap-reboot.css.map" />
+    <Content Include="Templates\vendor\bootstrap\css\bootstrap-reboot.min.css.map" />
+    <Content Include="Templates\vendor\bootstrap\css\bootstrap.css.map" />
+    <Content Include="Templates\vendor\bootstrap\css\bootstrap.min.css.map" />
+    <Content Include="Templates\vendor\bootstrap\js\bootstrap.bundle.js.map" />
+    <Content Include="Templates\vendor\bootstrap\js\bootstrap.bundle.min.js.map" />
+    <Content Include="Templates\vendor\bootstrap\js\bootstrap.js.map" />
+    <Content Include="Templates\vendor\bootstrap\js\bootstrap.min.js.map" />
+    <Content Include="Templates\vendor\fontawesome-free\webfonts\fa-brands-400.eot" />
+    <Content Include="Templates\vendor\fontawesome-free\webfonts\fa-brands-400.ttf" />
+    <Content Include="Templates\vendor\fontawesome-free\webfonts\fa-brands-400.woff" />
+    <Content Include="Templates\vendor\fontawesome-free\webfonts\fa-brands-400.woff2" />
+    <Content Include="Templates\vendor\fontawesome-free\webfonts\fa-regular-400.eot" />
+    <Content Include="Templates\vendor\fontawesome-free\webfonts\fa-regular-400.ttf" />
+    <Content Include="Templates\vendor\fontawesome-free\webfonts\fa-regular-400.woff" />
+    <Content Include="Templates\vendor\fontawesome-free\webfonts\fa-regular-400.woff2" />
+    <Content Include="Templates\vendor\fontawesome-free\webfonts\fa-solid-900.eot" />
+    <Content Include="Templates\vendor\fontawesome-free\webfonts\fa-solid-900.ttf" />
+    <Content Include="Templates\vendor\fontawesome-free\webfonts\fa-solid-900.woff" />
+    <Content Include="Templates\vendor\fontawesome-free\webfonts\fa-solid-900.woff2" />
+    <Content Include="Templates\vendor\jquery\jquery.min.map" />
+    <Content Include="Templates\vendor\jquery\jquery.slim.min.map" />
+    <Content Include="Views\Account\ForgotPassword.cshtml" />
+    <Content Include="Views\Account\ResendEmailConfirmation.cshtml" />
+    <Content Include="Views\Account\ConfirmationSent.cshtml" />
     <Content Include="Views\Comments\Create.cshtml" />
     <Content Include="Views\Comments\Delete.cshtml" />
     <Content Include="Views\Comments\Details.cshtml" />
     <Content Include="Views\Comments\Edit.cshtml" />
     <Content Include="Views\Comments\Index.cshtml" />
-    <Content Include="Scripts\tinymce\skins\ui\oxide\fonts\tinymce-mobile.woff" />
-    <Content Include="Scripts\tinymce\skins\ui\oxide-dark\fonts\tinymce-mobile.woff" />
-    <Content Include="Scripts\tinymce\langs\readme.md" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Uploads\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

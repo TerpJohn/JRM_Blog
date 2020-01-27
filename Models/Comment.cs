@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace JRM_Blog.Models.BlogModels.cs
+namespace JRM_Blog.Models
 {
     public class Comment
     {
@@ -16,6 +16,6 @@ namespace JRM_Blog.Models.BlogModels.cs
             public string UpdateReason { get; set; }
 
         public virtual ApplicationUser Author { get; set; }
-        public virtual BlogPost Blog { get; set; }
+        public virtual BlogPost Post { get; set; }
     }
 }

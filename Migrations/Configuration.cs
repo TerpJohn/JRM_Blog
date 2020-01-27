@@ -35,13 +35,15 @@ namespace JRM_Blog.Migrations
 
             var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
 
-            if (!context.Users.Any(u => u.Email == "user1@email.com"))
+            // Adding Admin
+
+            if (!context.Users.Any(u => u.Email == "user@email.com"))
             {
 
                 userManager.Create(new ApplicationUser
                 {
-                    UserName = "user1",
-                    Email = "user1@email.com",
+                    UserName = "user@email.com",
+                    Email = "user@email.com",
                     FirstName = "John",
                     LastName = "User",
                     DisplayName = "JU1"
@@ -50,7 +52,7 @@ namespace JRM_Blog.Migrations
 
             }
 
-            var userId = userManager.FindByEmail("user1@email.com").Id;
+            var userId = userManager.FindByEmail("user@email.com").Id;
             userManager.AddToRole(userId, "Admin");
 
             //Adding Moderator

@@ -10,6 +10,7 @@ using JRM_Blog.Models;
 
 namespace JRM_Blog.Controllers
 {
+    [RequireHttps]
     [Authorize]
     public class ManageController : Controller
     {

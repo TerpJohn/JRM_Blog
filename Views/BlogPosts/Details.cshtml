@@ -1,74 +1,128 @@
-﻿@model JRM_Blog.Models.BlogModels.cs.BlogPost
+﻿@model JRM_Blog.Models.BlogPost
 
 @{
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
+<!-- Page Header -->
+<header class="masthead" style="background-image: url('img/post-bg.jpg')">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
 
-<div>
-    <h4>BlogPost</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Created)
-        </dt>
+                <div class="post-heading">
 
-        <dd>
-            @Html.DisplayFor(model => model.Created)
-        </dd>
+                    <h1>
+                        @Model.Title
+                    </h1>
+                    <span class="meta">
+                        Posted by John
+                        on @Model.Created.ToString("MMM dd, yyyy")
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Updated)
-        </dt>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
 
-        <dd>
-            @Html.DisplayFor(model => model.Updated)
-        </dd>
+<!-- Post Content -->
+<article>
+    @*<div class="container">*@
+    <div class="row">
+        <div class="col-lg-4 col-md-2">
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
+            @if (Model.MediaURL != null)
+            {
+                <img class="img-thumbnail mx-5" style="width:200px;height:200px;" src="@Model.MediaURL" alt="" />
+            }
 
-        <dd>
-            @Html.DisplayFor(model => model.Title)
-        </dd>
+        </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Slug)
-        </dt>
+        <div class="col-lg-8 col-md-10 mx-auto">
 
-        <dd>
-            @Html.DisplayFor(model => model.Slug)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Body)
-        </dt>
-
-        <dd>
             @Html.Raw(Model.Body)
-        </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.MediaURL)
-        </dt>
+        </div>
+    </div>
+    <hr>
 
-        <dd>
-            @Html.DisplayFor(model => model.MediaURL)
-        </dd>
+</article>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Published)
-        </dt>
+<div class="container">
+    <div class="row">
+        <div class="col-md-2">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <div class="btn btn-outline-success btn-wide">
+                    @Html.ActionLink("Comment", "Create", "Comments")
 
-        <dd>
-            @Html.DisplayFor(model => model.Published)
-        </dd>
+                </div>
+            }
+            else
+            {
+                @*<div class="col-md-5"></div>
+                <div class="col-md-2">*@
+                <div class="col-md-12">
+                    <p>@Html.ActionLink("Login to Comment", "Login", "Account", new { returnUrl = Url.Action("Details", "BlogPosts", new { Slug = Model.Slug }) }, new { @class = "btn btn-primary btn-wide mx-auto" })</p>
+                </div>
+                @*<div class="col-md-5"></div>*@
+            }
 
-    </dl>
+        </div>
+
+        <div class="col-md-8"></div>
+
+        @if (User.IsInRole("Admin"))
+        {
+            <div class="col-md-2">
+                <div class="btn btn-outline-primary btn-wide">
+                    @Html.ActionLink("Edit", "Edit", new { id = Model.Id })
+
+                </div>
+            </div>
+        }
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+<hr>
+<div class="row">
+    <h3 class="mx-auto">Comments</h3>
+</div>
+<div class="container">
+    @foreach (var item in Model.Comments)
+
+    {
+        <div class="row">
+
+            <div class="col-md-4">
+                <h5><a href="#">@item.Author.DisplayName</a></h5>
+            </div>
+            <div class="col-md-2">
+                <h6>@item.Created.ToString("MMM dd, yyyy")</h6>
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <p>@item.Body</p>
+
+        </div>
+
+        <hr>
+
+    }
+
+    @if (User.IsInRole("Admin") || User.IsInRole("Moderator"))
+    {
+        <div class="row">
+            <div class="col-md-12">
+                @Html.ActionLink("Manage Comments", "Index", "Comments", null, new { @class = "btn btn-danger btn-block" })
+            </div>
+        </div>
+    }
+</div>
+
+
+

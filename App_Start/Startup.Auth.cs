@@ -6,6 +6,7 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Google;
 using Owin;
 using JRM_Blog.Models;
+using Owin.Security.Providers.LinkedIn;
 
 namespace JRM_Blog
 {
@@ -58,11 +59,13 @@ namespace JRM_Blog
             //   appId: "",
             //   appSecret: "");
 
-            //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
-            //{
-            //    ClientId = "",
-            //    ClientSecret = ""
-            //});
+            app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
+            {
+                ClientId = "230612698426-9u9glu7tjrimsvn55pkcm7r6jr7s3j50.apps.googleusercontent.com",
+                ClientSecret = "An2lX0AvzsNVtOSIoDE3Wy64"
+            });
+
+            app.UseLinkedInAuthentication("786xxc2icz3uhp", "CBXoV4tWAl8wqyYd");
         }
     }
 }

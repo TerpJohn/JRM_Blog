@@ -1,17 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using JRM_Blog.Helpers;
 using JRM_Blog.Models;
-using JRM_Blog.Models.BlogModels.cs;
+using PagedList;
 
 namespace JRM_Blog.Controllers
 {
+
+    [RequireHttps]
+
     public class BlogPostsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -19,11 +22,38 @@ namespace JRM_Blog.Controllers
         public string Slug { get; private set; }
 
         // GET: BlogPosts
-        public ActionResult Index()
+        public ActionResult Index(int? page, string searchStr)
         {
-            return View(db.BlogPosts.ToList());
+            ViewBag.Search = searchStr;
+            var blogList = IndexSearch(searchStr);
+
+            int pageSize = 4;
+            int pageNumber = (page ?? 1);
+
+            return View(blogList.ToPagedList(pageNumber, pageSize));
         }
 
+        public IQueryable<BlogPost> IndexSearch(string searchStr)
+        {
+            IQueryable<BlogPost> result = null;
+            if (searchStr != null)
+            {
+                result = db.BlogPosts.AsQueryable();
+                result = result.Where(p => p.Title.Contains(searchStr) ||
+                                            p.Body.Contains(searchStr) ||
+                                            p.Comments.Any(c => c.Body.Contains(searchStr) ||
+                                            c.Author.FirstName.Contains(searchStr) ||
+                                            c.Author.LastName.Contains(searchStr) ||
+                                            c.Author.DisplayName.Contains(searchStr) ||
+                                            c.Author.Email.Contains(searchStr)));
+            }
+            else
+            {
+                result = db.BlogPosts.AsQueryable();
+            }
+
+            return result.OrderByDescending(p => p.Created);
+        }
         // GET: BlogPosts/Details/5
         public ActionResult Details(string Slug)
         {
@@ -38,8 +68,10 @@ namespace JRM_Blog.Controllers
             }
             return View(blogPost);
         }
-
         // GET: BlogPosts/Create
+
+        [Authorize(Roles = "Admin")]
+
         public ActionResult Create()
         {
             return View();
@@ -50,7 +82,7 @@ namespace JRM_Blog.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Title,Body,MediaURL,Published")] BlogPost blogPost)
+        public ActionResult Create([Bind(Include = "Id,Title,Body,MediaURL,Published")] BlogPost blogPost, HttpPostedFileBase image)
         {
                 if (ModelState.IsValid)
             {
@@ -60,10 +92,16 @@ namespace JRM_Blog.Controllers
                     ModelState.AddModelError("Title", "Invalid title");
                     return View(blogPost);
                 }
-                if(db.BlogPosts.Any(p => p.Slug ==Slug))
+                if(db.BlogPosts.Any(p => p.Slug == Slug))
                 {
                     ModelState.AddModelError("Title", "The title must be unique");
                     return View(blogPost);
+                }
+                if (ImageUploadValidator.IsWebFriendlyImage(image))
+                {
+                    var fileName = Path.GetFileName(image.FileName);
+                    image.SaveAs(Path.Combine(Server.MapPath("~/Uploads/"), fileName));
+                    blogPost.MediaURL = "/Uploads/" + fileName;
                 }
 
                 blogPost.Slug = Slug;
@@ -77,6 +115,9 @@ namespace JRM_Blog.Controllers
         }
 
         // GET: BlogPosts/Edit/5
+
+        [Authorize(Roles = "Admin")]
+
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -95,10 +136,18 @@ namespace JRM_Blog.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Created,Updated,Title,Slug,Body,MediaURL,Published")] BlogPost blogPost)
+        public ActionResult Edit([Bind(Include = "Id,Created,Updated,Title,Slug,Body,MediaURL,Published")] BlogPost blogPost, HttpPostedFileBase image)
         {
             if (ModelState.IsValid)
-            {
+            { 
+                if (ImageUploadValidator.IsWebFriendlyImage(image))
+                {
+                    var fileName = Path.GetFileName(image.FileName);
+                    image.SaveAs(Path.Combine(Server.MapPath("~/Uploads/"), fileName));
+                    blogPost.MediaURL = "/Uploads/" + fileName;
+                }
+
+                blogPost.Updated = DateTimeOffset.Now;
                 db.Entry(blogPost).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -107,6 +156,9 @@ namespace JRM_Blog.Controllers
         }
 
         // GET: BlogPosts/Delete/5
+
+        [Authorize(Roles = "Admin")]
+
         public ActionResult Delete(int? id)
         {
             if (id == null)
