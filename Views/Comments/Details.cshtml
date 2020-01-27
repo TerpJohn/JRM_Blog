@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = "Details";
 }
-
+<div class="container">
 <h2>Details</h2>
 
 <div>
@@ -39,7 +39,7 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Created)
+            @Model.Created.ToString("MMM dd, yyyy HH:mm")
         </dd>
 
         <dt>
@@ -47,7 +47,14 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Updated)
+            @if (Model.Updated == null)
+            {
+                <p> No updates yet.</p>
+            }
+            else
+            {
+                @Model.Updated.Value.ToString("MMM dd, yyyy HH:mm")
+            }
         </dd>
 
         <dt>
@@ -67,3 +74,4 @@
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) 
     }
 </p>
+    </div>

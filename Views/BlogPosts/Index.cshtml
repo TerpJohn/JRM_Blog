@@ -14,131 +14,129 @@
 {
 
     <div class="container-fluid px-5">
-    <div class="row">
-        <div class="col-md-5"></div>
-        <div class="col-md-2">
-            <h2 style='color: blue;'>Index</h2>
+
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h2 style="color: blue;">Index</h2>
+            </div>
         </div>
-        <div class="col-md-5"></div>
-    </div>
-    <div class="row">
-        <div class="col-md-2">
-            @Html.ActionLink("Create New", "Create")
+
+        <div class="col-md-12">
+            @Html.ActionLink("Create New Post", "Create", "BlogPosts", null, new { @class = "btn btn-primary btn-block" })
         </div>
-        <div class="col-md-6"></div>
-    </div>
-    <hr>
-    <table class="table">
 
-        <tr>
-            <th>
-                Created
-            </th>
-            <th>
-                Updated
-            </th>
-            <th>
-                Title
-            </th>
-            <th>
-                Slug
-            </th>
-            <th>
-                Body
-            </th>
-            <th>
-                MediaURL
-            </th>
-            <th>
-                Published
-            </th>
-            <th></th>
-        </tr>
-
-
-
-        @foreach (var item in Model)
-        {
+        <hr>
+        <table class="table">
 
             <tr>
-                <td>
-                    @item.Created.ToString("MMM dd, yyyy HH:mm")
-                </td>
-                <td>
-                    @if (item.Updated == null)
-                    {
-                        <p> No updates yet.</p>
-                    }
-                    else
-                    {
-                        @item.Updated.Value.ToString("MMM dd, yyyy HH:mm")
-                    }
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Slug)
-                </td>
-                <td>
-                    @Html.Raw(item.Body)
-                </td>
-                <td>
-                    @if (item.MediaURL == null)
-                    {
-                        <p> No images </p>
-                    }
-
-                    else
-                    {
-                        <img class="img-thumbnail" style="width:100px;height:100px;" src="@item.MediaURL" alt="" />
-                    }
-
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Published)
-                </td>
-                <td>
-
-                    @Html.ActionLink("Details", "Details", "BlogPosts", new { slug = item.Slug }, new { @class = "nav-link" })
-                    @if (User.IsInRole("Admin"))
-                    {
-                        @Html.ActionLink("Edit", "Edit", "BlogPosts", new { id = item.Id }, new { @class = "nav-link" })
-                        @Html.ActionLink("Delete", "Delete", "BlogPosts", new { id = item.Id }, new { @class = "nav-link" })
-                    }
-
-                </td>
+                <th>
+                    Created
+                </th>
+                <th>
+                    Updated
+                </th>
+                <th>
+                    Title
+                </th>
+                <th>
+                    Slug
+                </th>
+                <th>
+                    Body
+                </th>
+                <th>
+                    MediaURL
+                </th>
+                <th>
+                    Published
+                </th>
+                <th></th>
             </tr>
-        }
-
-    </table>
 
 
 
+            @foreach (var item in Model)
+            {
+
+                <tr>
+                    <td>
+                        @item.Created.ToString("MMM dd, yyyy HH:mm")
+                    </td>
+                    <td>
+                        @if (item.Updated == null)
+                        {
+                            <p> No updates yet.</p>
+                        }
+                        else
+                        {
+                            @item.Updated.Value.ToString("MMM dd, yyyy HH:mm")
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Slug)
+                    </td>
+                    <td>
+                        @Html.Raw(item.Body)
+                    </td>
+                    <td>
+                        @if (item.MediaURL == null)
+                        {
+                            <p> No images </p>
+                        }
+
+                        else
+                        {
+                            <img class="img-thumbnail" style="width:100px;height:100px;" src="@item.MediaURL" alt="" />
+                        }
+
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Published)
+                    </td>
+                    <td>
+
+                        @Html.ActionLink("Details", "Details", "BlogPosts", new { slug = item.Slug }, new { @class = "nav-link" })
+                        @if (User.IsInRole("Admin"))
+                        {
+                            @Html.ActionLink("Edit", "Edit", "BlogPosts", new { id = item.Id }, new { @class = "nav-link" })
+                            @Html.ActionLink("Delete", "Delete", "BlogPosts", new { id = item.Id }, new { @class = "nav-link" })
+                        }
+
+                    </td>
+                </tr>
+            }
+
+        </table>
 
 
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
-                @Html.PagedListPager(Model, page => Url.Action("Index", new { page, searchStr = ViewBag.Search }))
-            </div>
-            <div class="col-md-6">
-                <div>
-                    @using (Html.BeginForm("Index", "BlogPosts", FormMethod.Get, htmlAttributes: new { @class = "form" }))
-                    {
-                        <div class="controls controls-row search-row" id="searchbox">
-                            <input id="searchStr" name="searchStr" class="input-block-level" type="text" placeholder="Search" />
-                            <button id="searchStr" name="searchStr" class="btn btn-success" type="submit">
-                                <i class="icon-search">Start Search</i>
-                            </button>
-                        </div>
-                    }
+
+
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+                    @Html.PagedListPager(Model, page => Url.Action("Index", new { page, searchStr = ViewBag.Search }))
                 </div>
+                <div class="col-md-6">
+                    <div>
+                        @using (Html.BeginForm("Index", "BlogPosts", FormMethod.Get, htmlAttributes: new { @class = "form" }))
+                        {
+                            <div class="controls controls-row search-row" id="searchbox">
+                                <input id="searchStr" name="searchStr" class="input-block-level" type="text" placeholder="Search" />
+                                <button id="searchStr" name="searchStr" class="btn btn-success" type="submit">
+                                    <i class="icon-search">Start Search</i>
+                                </button>
+                            </div>
+                        }
+                    </div>
 
+                </div>
             </div>
         </div>
-    </div>
     </div>
     }
     else
