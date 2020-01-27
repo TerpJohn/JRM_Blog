@@ -56,10 +56,11 @@ namespace JRM_Blog.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,PostId,Body,Updated,UpdateReason")] Comment comment )
+        public ActionResult Create([Bind(Include = "Id,PostId,Body,Updated,UpdateReason")] Comment comment)
         {
             if (ModelState.IsValid)
             {
+             
                 comment.Created = DateTimeOffset.Now;
                 comment.AuthorId = User.Identity.GetUserId();
                 db.Comments.Add(comment);
